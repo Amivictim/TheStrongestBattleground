@@ -8,7 +8,7 @@ local Terrain = workspace.Terrain
 local localPlayer = Players.LocalPlayer
 repeat task.wait() until localPlayer and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-local mainUsername = "mainuser"
+local mainUsername = mainuser
 local mainPosition = Vector3.new(361, 440, 428)
 local otherPosition = Vector3.new(359, 440, 425)
 local maxDistance = 3
