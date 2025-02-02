@@ -120,7 +120,7 @@ local function monitorKills()
     local kills = leaderstats:WaitForChild("Kills")
 
     kills.Changed:Connect(function()
-        if kills.Value % 9 == 0 and kills.Value > 0 then
+        if kills.Value % 999 == 0 and kills.Value > 0 then
             local resetArgs = {
                 [1] = {
                     ["Goal"] = "Reset"
@@ -170,4 +170,3 @@ task.spawn(fireEvents)
 task.spawn(monitorDeath)
 task.spawn(antiAfk)
 task.spawn(antiLag)
-monitorKills()
