@@ -1,5 +1,4 @@
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 
 local localPlayer = Players.LocalPlayer
@@ -14,12 +13,10 @@ local mainPosition = Vector3.new(361, 440, 428)
 local otherPosition = Vector3.new(359, 440, 425)
 local maxDistance = 3
 
-local function onCharacterAdded(newCharacter)
-    character = newCharacter
-    rootPart = character:FindFirstChild("HumanoidRootPart")
+local characterChanged = false
 
-    task.wait(1)
-
+if not characterChanged then
+    characterChanged = true
     local args = {
         [1] = {
             ["Goal"] = "Change Character",
@@ -27,11 +24,6 @@ local function onCharacterAdded(newCharacter)
         }
     }
     game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args))
-end
-
-localPlayer.CharacterAdded:Connect(onCharacterAdded)
-if localPlayer.Character then
-    onCharacterAdded(localPlayer.Character)
 end
 
 local function keepCharacterInPosition(targetPosition)
@@ -79,15 +71,20 @@ local function fireEvents()
 
     task.wait(0.1)
 
-    local tool = localPlayer.Backpack:FindFirstChild("Blitz Shot")
-    if tool then
-        local args2 = {
-            [1] = {
-                ["Tool"] = tool,
-                ["Goal"] = "Console Move"
+    local skills = {"Blitz Shot", "Jet Dive", "Ignition Burst", "Machine Gun Blows"}
+
+    for _, skill in ipairs(skills) do
+        local tool = localPlayer.Backpack:FindFirstChild(skill)
+        if tool then
+            local args2 = {
+                [1] = {
+                    ["Tool"] = tool,
+                    ["Goal"] = "Console Move"
+                }
             }
-        }
-        game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args2))
+            game:GetService("Players").LocalPlayer.Character.Communicate:FireServer(unpack(args2))
+        end
+        task.wait(0.1)
     end
 end
 
