@@ -2,11 +2,13 @@
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+local Terrain = workspace.Terrain
 
 local localPlayer = Players.LocalPlayer
 repeat task.wait() until localPlayer and localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
 
-local mainUsername = mainuser
+local mainUsername = "mainuser"
 local mainPosition = Vector3.new(361, 440, 428)
 local otherPosition = Vector3.new(359, 440, 425)
 local maxDistance = 3
@@ -129,8 +131,43 @@ local function monitorKills()
     end)
 end
 
+local function antiAfk()
+    local VirtualUser = game:GetService("VirtualUser")
+    localPlayer.Idled:Connect(function()
+        VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        task.wait(1)
+        VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    end)
+end
+
+local function antiLag()
+    Terrain.WaterWaveSize = 0
+    Terrain.WaterWaveSpeed = 0
+    Terrain.WaterReflectance = 0
+    Terrain.WaterTransparency = 0
+
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.Brightness = 0
+
+    for _, child in pairs(workspace:GetDescendants()) do
+        if child:IsA("BasePart") and child.Name ~= "Terrain" then
+            child.Material = Enum.Material.Plastic
+            child.Reflectance = 0
+        elseif child:IsA("Decal") or child:IsA("Texture") then
+            child:Destroy()
+        elseif child:IsA("ParticleEmitter") or child:IsA("Fire") or child:IsA("Smoke") then
+            child.Enabled = false
+        elseif child:IsA("Explosion") then
+            child.Visible = false
+        end
+    end
+end
+
 task.spawn(keepCharacterInPosition)
 task.spawn(rotateToClosestPlayer)
 task.spawn(fireEvents)
 task.spawn(monitorDeath)
+task.spawn(antiAfk)
+task.spawn(antiLag)
 monitorKills()
